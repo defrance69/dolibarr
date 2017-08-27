@@ -82,3 +82,5 @@ DefaultModelPropalToBill=Default template when closing a business proposal (to b
 DefaultModelPropalClosed=Default template when closing a business proposal (unbilled)
 ProposalCustomerSignature=Written acceptance, company stamp, date and signature
 ProposalsStatisticsSuppliers=Supplier proposals statistics 
+ProposalFollowedBy=Proposal followed by
+Phone=Phone
