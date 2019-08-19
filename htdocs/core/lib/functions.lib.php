@@ -4470,6 +4470,10 @@ function price2num($amount, $rounding = '', $alreadysqlnb = 0)
 {
 	global $langs,$conf;
 
+	// many converting error if null value are not converted to zero 
+	if (is_null($amount))
+	     $amount =0;
+
 	// Round PHP function does not allow number like '1,234.56' nor '1.234,56' nor '1 234,56'
 	// Numbers must be '1234.56'
 	// Decimal delimiter for PHP and database SQL requests must be '.'
