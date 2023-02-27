@@ -12,7 +12,7 @@
  * Copyright (C) 2015      Jean-François Ferry   <jfefe@aternatik.fr>
  * Copyright (C) 2015-2022 Ferran Marcet         <fmarcet@2byte.es>
  * Copyright (C) 2017      Josep Lluís Amador    <joseplluis@lliuretic.cat>
- * Copyright (C) 2018      Charlene Benke        <charlie@patas-monkey.com>
+ * Copyright (C) 2018-2023 Charlene Benke        <charlie@patas-monkey.com>
  * Copyright (C) 2019-2021 Alexandre Spangaro    <aspangaro@open-dsi.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1802,6 +1802,8 @@ if ($resql) {
 		$totalarray['val']['f.total_tva'] = 0;
 		$totalarray['val']['f.total_ht'] = 0;
 		$totalarray['val']['f.total_ttc'] = 0;
+		$totalarray['val']['totalam'] = 0;
+		$totalarray['val']['rtp'] = 0;
 
 		$with_margin_info = false;
 		if (isModEnabled('margin') && (
