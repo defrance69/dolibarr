@@ -3,7 +3,9 @@
  * Copyright (C) 2016	Laurent Destailleur		<eldy@users.sourceforge.net>
  * Copyright (C) 2016   Jean-François Ferry     <jfefe@aternatik.fr>
  * Copyright (C) 2023   Romain Neil             <contact@romain-neil.fr>
- * Copyright (C) 2024		Frédéric France			<frederic.france@free.fr>
+ * Copyright (C) 2024	Frédéric France			<frederic.france@free.fr>
+ * Copyright (C) 2024	Charlene Benke			<charlene@patas-monkey.com>
+ 
  *
  * This program is free software you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -300,7 +302,7 @@ class Documents extends DolibarrApi
 	 *
 	 * @param   string 	$modulepart		Name of module or area concerned ('thirdparty', 'member', 'proposal', 'order', 'invoice', 'supplier_invoice', 'shipment', 'project',  ...)
 	 * @param	int		$id				ID of element
-	 * @param	string	$ref			Ref of element
+	 * @param	string	$ref			Ref of element or ECM folders
 	 * @param	string	$sortfield		Sort criteria ('','fullname','relativename','name','date','size')
 	 * @param	string	$sortorder		Sort order ('asc' or 'desc')
 	 * @return	array					Array of documents with path
@@ -547,21 +549,9 @@ class Documents extends DolibarrApi
 
 			$upload_dir = $conf->categorie->multidir_output[$object->entity].'/'.get_exdir($object->id, 2, 0, 0, $object, 'category').$object->id."/photos/".dol_sanitizeFileName($object->ref);
 		} elseif ($modulepart == 'ecm') {
-			throw new RestException(500, 'Modulepart Ecm not implemented yet.');
-			// require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
-
-			// if (!DolibarrApiAccess::$user->hasRight('ecm', 'read')) {
-			// 	throw new RestException(403);
-			// }
-
-			// // $object = new EcmDirectory($this->db);
-			// // $result = $object->fetch($ref);
-			// // if (!$result) {
-			// // 	throw new RestException(404, 'EcmDirectory not found');
-			// // }
-			// $upload_dir = $conf->ecm->dir_output;
-			// $type = 'all';
-			// $recursive = 0;
+			$upload_dir = $conf->ecm->dir_output . "/". $ref;
+			$type = 'all';
+			$recursive = 0;
 		} elseif ($modulepart == 'contrat' || $modulepart == 'contract') {
 			$modulepart = 'contrat';
 			require_once DOL_DOCUMENT_ROOT . '/contrat/class/contrat.class.php';
