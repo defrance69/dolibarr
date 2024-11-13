@@ -8,8 +8,6 @@ LocalAgenda=lịch mặc định
 ActionsOwnedBy=Tổ chức sự kiện thuộc sở hữu của
 ActionsOwnedByShort=Chủ sở hữu
 AffectedTo=Giao cho
-Event=Sự kiện
-Events=Sự kiện
 EventsNb=Số sự kiện
 ListOfActions=Danh sách các sự kiện
 EventReports=Báo cáo sự kiện
@@ -23,7 +21,6 @@ MenuDoneMyActions=Sự kiện đã chấm dứt của tôi
 ListOfEvents=Danh sách sự kiện (lịch mặc định)
 ActionsAskedBy=Sự kiện báo cáo bởi
 ActionsToDoBy=Sự kiện được giao
-ActionsDoneBy=Sự kiện được thực hiện bởi
 ActionAssignedTo=Sự kiện được giao cho
 ViewCal=Xem tháng
 ViewDay=Xem ngày
@@ -89,6 +86,8 @@ ShippingSentByEMail=Lô hàng %s được gửi qua email
 ShippingValidated= Lô hàng %s được xác thực
 InterventionSentByEMail=Can thiệp %s được gửi qua email
 ProjectSentByEMail=Dự án %s được gửi qua email
+ProjectDeletedInDolibarr=Dự án %s đã bị xóa
+ProjectClosedInDolibarr=Dự án %s đã đóng
 ProposalDeleted=Đề xuất đã bị xóa
 OrderDeleted=Đã xóa đơn hàng
 InvoiceDeleted=Hóa đơn đã bị xóa
@@ -129,17 +128,20 @@ MRP_MO_DELETEInDolibarr=MO đã xóa
 MRP_MO_CANCELInDolibarr=MO đã bị hủy
 PAIDInDolibarr=%s đã thanh toán
 ENABLEDISABLEInDolibarr=Người dùng kích hoạt hoặc vô hiệu hóa
+CANCELInDolibarr=Đã hủy
 ##### End agenda events #####
 AgendaModelModule=Mẫu tài liệu cho sự kiện
 DateActionStart=Ngày bắt đầu
 DateActionEnd=Ngày kết thúc
 AgendaUrlOptions1=Bạn cũng có thể thêm các thông số sau đây để lọc đầu ra:
-AgendaUrlOptions3=<b>logina = %s</b> để hạn chế đầu ra cho các hành động thuộc sở hữu của người dùng <b>%s</b> .
-AgendaUrlOptionsNotAdmin=<b>logina =! %s</b> để hạn chế đầu ra cho các hành động không thuộc sở hữu của người dùng <b>%s</b> .
+AgendaUrlOptions3=<b>logina=%s</b> to restrict output to actions owned by a user <b>%s</b> (use <b>logina=!%s</b> for events not owned by the user).
 AgendaUrlOptions4=<b>logint = %s</b> để hạn chế đầu ra cho các hành động được chỉ định cho người dùng <b>%s</b> (chủ sở hữu và những người khác).
 AgendaUrlOptionsProject=<b>project = __PROJECT_ID__</b> để hạn chế đầu ra cho các hành động được liên kết với dự án <b>__PROJECT_ID__</b>.
-AgendaUrlOptionsNotAutoEvent=<b>notactiontype = systemauto</b> để loại trừ các sự kiện tự động.
+AgendaUrlOptionsType=<b>actiontype=%s</b> to get either automatic or manual events
+AgendaUrlOptionsCode=<b>actioncode=%s</b> to get only events with a given code
 AgendaUrlOptionsIncludeHolidays=<b>includeholidays=1</b> bào gồm các ngày nghỉ sự kiện
+AgendaUrlOptionsLimitDays=<b>notolderthan=%s</b> to limit to events in the last %s days (default is %s).
+AgendaUrlOptionsLimit=<b>limit=50</b> to limit to the latest 50 events (default and max is %s).
 AgendaShowBirthdayEvents=Sinh nhật của các liên hệ
 AgendaHideBirthdayEvents=Ẩn ngày sinh của các liên lạc
 Busy=Bận
@@ -187,10 +189,8 @@ MenuBookcalIndex=Cuộc hẹn trực tuyến
 BookcalLabelAvailabilityHelp=Nhãn của phạm vi sẵn có. Ví dụ:<br>Có sẵn rộng rãi<br>Có sẵn trong dịp lễ Giáng sinh
 DurationOfRange=Thời lượng của phạm vi
 BookCalSetup = Thiết lập cuộc hẹn trực tuyến
-Settings = Cài đặt
 BookCalSetupPage = Trang thiết lập cuộc hẹn trực tuyến
 BOOKCAL_PUBLIC_INTERFACE_TOPIC = Tiêu đề giao diện
-About = Về
 BookCalAbout = Giới thiệu về BookCal
 BookCalAboutPage = BookCal về trang
 Calendars=Lịch
@@ -202,3 +202,6 @@ AppointmentDuration = Thời lượng cuộc hẹn: %s
 BookingSuccessfullyBooked=Đặt chỗ của bạn đã được lưu
 BookingReservationHourAfter=Chúng tôi xác nhận việc đặt trước cuộc họp của chúng tôi vào ngày %s
 BookcalBookingTitle=Cuộc hẹn trực tuyến
+Transparency = Minh bạch
+ReadMore = Read more
+ReadLess = Read less

@@ -1,6 +1,7 @@
 <?php
 /* Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2023 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2024       Frédéric France         <frederic.france@free.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +20,7 @@
 /**
  *      \file       htdocs/comm/action/info.php
  *      \ingroup    agenda
- *		\brief      Page des informations d'une action
+ *		\brief      Page des information d'une action
  */
 
 // Load Dolibarr environment
@@ -34,12 +35,20 @@ if (isModEnabled('project')) {
 	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
 }
 
+/**
+ * @var Conf $conf
+ * @var DoliDB $db
+ * @var HookManager $hookmanager
+ * @var Translate $langs
+ * @var User $user
+ */
+
 // Load translation files required by the page
 $langs->load("commercial");
 
-$id = GETPOST('id', 'int');
+$id = GETPOSTINT('id');
 
-// Initialize technical object to manage hooks of page. Note that conf->hooks_modules contains array of hook context
+// Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('actioncard', 'globalcard'));
 
 // Security check
@@ -73,7 +82,7 @@ $head = actions_prepare_head($object);
 print dol_get_fiche_head($head, 'info', $langs->trans("Action"), -1, 'action');
 
 // Link to other agenda views
-$linkback .= '<a href="'.DOL_URL_ROOT.'/comm/action/list.php?mode=show_list&restore_lastsearch_values=1">';
+$linkback = '<a href="'.DOL_URL_ROOT.'/comm/action/list.php?mode=show_list&restore_lastsearch_values=1">';
 $linkback .= img_picto($langs->trans("BackToList"), 'object_calendarlist', 'class="pictoactionview pictofixedwidth"');
 $linkback .= '<span class="hideonsmartphone">'.$langs->trans("BackToList").'</span>';
 $linkback .= '</a>';

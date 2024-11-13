@@ -1,5 +1,6 @@
 <?php
 /* Copyright (C) 2004-2018 Laurent Destailleur <eldy@users.sourceforge.net>
+ * Copyright (C) 2024       Frédéric France         <frederic.france@free.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,13 +30,21 @@
 // Load Dolibarr environment
 require '../main.inc.php';
 
+/**
+ * @var Conf $conf
+ * @var DoliDB $db
+ * @var HookManager $hookmanager
+ * @var Translate $langs
+ * @var User $user
+ */
+
 // Load translation files required by the page
 $langs->load("other");
 
 
 $mainmenu = GETPOST('mainmenu', "aZ09");
 $leftmenu = GETPOST('leftmenu', "aZ09");
-$idmenu = GETPOST('idmenu', 'int');
+$idmenu = GETPOSTINT('idmenu');
 $theme = GETPOST('theme', 'aZ09');
 $codelang = GETPOST('lang', 'aZ09');
 $keyforcontent = GETPOST('keyforcontent', 'aZ09');
@@ -50,14 +59,14 @@ if (!isModEnabled("externalsite")) {
  */
 
 if (empty($keyforcontent) && !getDolGlobalString('EXTERNALSITE_URL')) {
-	llxHeader();
+	llxHeader('', '', '', '', 0, 0, '', '', '', 'mod-externalsite page-frames');
 	print '<div class="error">'.$langs->trans('ExternalSiteModuleNotComplete').'</div>';
 	llxFooter();
 	exit;
 }
 
 if (!empty($keyforcontent)) {
-	llxHeader();
+	llxHeader('', '', '', '', 0, 0, '', '', '', 'mod-externalsite page-frames');
 
 	print '<div class="framecontent" style="height: '.($_SESSION['dol_screenheight'] - 90).'px">';
 
@@ -143,7 +152,7 @@ if (!empty($keyforcontent)) {
 	</html>
 	";
 	} else {
-		llxHeader();
+		llxHeader('', '', '', '', 0, 0, '', '', '', 'mod-externalsite page-frames');
 		print '<div class="framecontent" style="height: '.($_SESSION['dol_screenheight'] - 90).'px">';
 		print $conf->global->EXTERNALSITE_URL;
 		print '<div>';

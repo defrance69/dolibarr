@@ -5,6 +5,8 @@
  * Copyright (C) 2005-2012 Regis Houssin         <regis.houssin@inodbox.com>
  * Copyright (C) 2005      Simon TOSSER          <simon@kornog-computing.com>
  * Copyright (C) 2013      Cédric Salvador       <csalvador@gpcsolutions.fr>
+ * Copyright (C) 2024       Frédéric France         <frederic.france@free.fr>
+ * Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,20 +41,27 @@ if (isModEnabled('project')) {
 	require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 }
 
+/**
+ * @var Conf $conf
+ * @var DoliDB $db
+ * @var HookManager $hookmanager
+ * @var Translate $langs
+ * @var User $user
+ */
+
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'commercial', 'other', 'bills'));
 
-$id = GETPOST('id', 'int');
+$id = GETPOSTINT('id');
 $action = GETPOST('action', 'aZ09');
 $confirm = GETPOST('confirm', 'alpha');
 
 // Security check
-$socid = GETPOST('socid', 'int');
+$socid = GETPOSTINT('socid');
 if ($user->socid) {
 	$socid = $user->socid;
 }
 if ($user->socid > 0) {
-	unset($_GET["action"]);
 	$action = '';
 }
 
@@ -63,14 +72,14 @@ if ($id > 0) {
 	$object->fetch_thirdparty();
 }
 
-// Initialize technical object to manage hooks of page. Note that conf->hooks_modules contains array of hook context
+// Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('actioncard', 'globalcard'));
 
 // Get parameters
-$limit = GETPOST('limit', 'int') ? GETPOST('limit', 'int') : $conf->liste_limit;
+$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
 $sortfield = GETPOST('sortfield', 'aZ09comma');
 $sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOST('pageplusone') - 1) : GETPOST("page", 'int');
+$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -149,7 +158,7 @@ if ($object->id > 0) {
 	print dol_get_fiche_head($head, 'documents', $langs->trans("Action"), -1, 'action');
 
 	// Link to other agenda views
-	$linkback .= '<a href="'.DOL_URL_ROOT.'/comm/action/list.php?mode=show_list&restore_lastsearch_values=1">';
+	$linkback = '<a href="'.DOL_URL_ROOT.'/comm/action/list.php?mode=show_list&restore_lastsearch_values=1">';
 	$linkback .= img_picto($langs->trans("BackToList"), 'object_calendarlist', 'class="pictoactionview pictofixedwidth"');
 	$linkback .= '<span class="hideonsmartphone">'.$langs->trans("BackToList").'</span>';
 	$linkback .= '</a>';
@@ -270,7 +279,7 @@ if ($object->id > 0) {
 	$listofuserid = array();
 	if (empty($donotclearsession)) {
 		if ($object->userownerid > 0) {
-			$listofuserid[$object->userownerid] = array('id'=>$object->userownerid, 'transparency'=>$object->transparency); // Owner first
+			$listofuserid[$object->userownerid] = array('id' => $object->userownerid, 'transparency' => $object->transparency); // Owner first
 		}
 		if (!empty($object->userassigned)) {	// Now concat assigned users
 			// Restore array with key with same value than param 'id'
@@ -290,7 +299,7 @@ if ($object->id > 0) {
 	$listofcontactid = array(); // not used yet
 	$listofotherid = array(); // not used yet
 	print '<div class="assignedtouser">';
-	print $form->select_dolusers_forevent('view', 'assignedtouser', 1, '', 0, '', '', 0, 0, 0, '', ($object->datep != $object->datef) ? 1 : 0, $listofuserid, $listofcontactid, $listofotherid);
+	print $form->select_dolusers_forevent('view', 'assignedtouser', 1, array(), 0, '', array(), 0, 0, 0, '', ($object->datep != $object->datef) ? 1 : 0, $listofuserid, $listofcontactid, $listofotherid);
 	print '</div>';
 	/*if (in_array($user->id,array_keys($listofuserid)))
 	{

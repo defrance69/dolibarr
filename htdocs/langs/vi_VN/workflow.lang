@@ -9,27 +9,28 @@ descWORKFLOW_CONTRACT_AUTOCREATE_INVOICE=Tự động tạo hóa đơn khách h�
 descWORKFLOW_ORDER_AUTOCREATE_INVOICE=Tự động tạo hóa đơn khách hàng sau khi đơn đặt hàng bán được đóng (hóa đơn mới sẽ có cùng số tiền với đơn đặt hàng)
 descWORKFLOW_TICKET_CREATE_INTERVENTION=Khi tạo vé, tự động tạo can thiệp.
 # Autoclassify customer proposal or order
-descWORKFLOW_ORDER_CLASSIFY_BILLED_PROPAL=Classify linked source proposals as billed when a sales order is set to billed (and if the amount of the order is the same as the total amount of the signed linked proposals)
-descWORKFLOW_INVOICE_CLASSIFY_BILLED_PROPAL=Classify linked source proposals as billed when a customer invoice is validated (and if the amount of the invoice is the same as the total amount of the signed linked proposals)
-descWORKFLOW_INVOICE_AMOUNT_CLASSIFY_BILLED_ORDER=Classify linked source sales order as billed when a customer invoice is validated (and if the amount of the invoice is the same as the total amount of the linked sales orders). If you have 1 invoice validated for n orders, this may set all orders to billed too.
-descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER=Classify linked source sales orders as billed when a customer invoice is set to paid (and if the amount of the invoice is the same as the total amount of the linked sales orders). If you have 1 invoice set billed for n orders, this may set all orders to billed too.
-descWORKFLOW_ORDER_CLASSIFY_SHIPPED_SHIPPING=Phân loại các đơn đặt hàng nguồn được liên kết là đã vận chuyển khi một lô hàng được xác thực (và nếu số lượng vận chuyển của tất cả các lô hàng giống như trong thứ tự cập nhật)
-descWORKFLOW_ORDER_CLASSIFY_SHIPPED_SHIPPING_CLOSED=Phân loại đơn bán hàng nguồn được liên kết là đã vận chuyển khi đóng một lô hàng (và nếu số lượng vận chuyển của tất cả các lô hàng giống như trong thứ tự cập nhật)
+descWORKFLOW_ORDER_CLASSIFY_BILLED_PROPAL=When a sales order is set to billed, classify linked source proposals as billed (and if the amount of the order is the same as the total amount of the signed linked proposals)
+descWORKFLOW_INVOICE_CLASSIFY_BILLED_PROPAL=When a customer invoice is validated, classify linked source proposals as billed (and if the amount of the invoice is the same as the total amount of the signed linked proposals)
+descWORKFLOW_INVOICE_CLASSIFY_BILLED_ORDER=When a customer invoice is set to paid, classify linked source sales orders as billed (and if the amount of the invoice is the same as the total amount of the linked sales orders). If you generate 1 invoice for n orders, this may set all orders to billed too.
+descWORKFLOW_INVOICE_AMOUNT_CLASSIFY_BILLED_ORDER=When a customer invoice is validated, classify all the linked source sales orders as billed (and if the amount of the invoice is the same as the total amount of the linked source sales orders). If you generate 1 common invoice for n orders, this may set all source orders to billed.
+descWORKFLOW_SUM_INVOICES_AMOUNT_CLASSIFY_BILLED_ORDER=When a customer invoice is validated, classify the linked sales order (if there is only one) as billed, if the total amount of the linked sale order is equal to the total amount of all invoices issued from it. If you generate n invoices for 1 order, this allow to set the order to billed as soon as all invoices are validated.
+descWORKFLOW_ORDER_CLASSIFY_SHIPPED_SHIPPING=When a shipment is validated, classify linked source sales orders as shipped (and if the quantity shipped by all shipments is the same as in the order to update)
+descWORKFLOW_ORDER_CLASSIFY_SHIPPED_SHIPPING_CLOSED=When a shipment is closed, classify linked source sales order as shipped (and if the quantity shipped by all shipments is the same as in the order to update)
 # Autoclassify purchase proposal
-descWORKFLOW_ORDER_CLASSIFY_BILLED_SUPPLIER_PROPOSAL=Classify linked source vendor proposal as billed when vendor invoice is validated (and if the amount of the invoice is the same as the total amount of the linked proposals)
+descWORKFLOW_ORDER_CLASSIFY_BILLED_SUPPLIER_PROPOSAL=When a vendor invoice is validated, classify linked source vendor proposal as billed (and if the amount of the invoice is the same as the total amount of the linked proposals)
 # Autoclassify purchase order
-descWORKFLOW_INVOICE_AMOUNT_CLASSIFY_BILLED_SUPPLIER_ORDER=Classify linked source purchase order as billed when vendor invoice is validated (and if the amount of the invoice is the same as the total amount of the linked orders)
-descWORKFLOW_ORDER_CLASSIFY_RECEIVED_RECEPTION=Phân loại đơn đặt hàng nguồn được liên kết là đã nhận khi việc tiếp nhận được xác thực (và nếu số lượng mà tất cả các lần tiếp nhận nhận được giống như trong đơn đặt hàng để cập nhật)
-descWORKFLOW_ORDER_CLASSIFY_RECEIVED_RECEPTION_CLOSED=Phân loại đơn đặt hàng nguồn liên kết là đã nhận khi quầy tiếp nhận đóng cửa (và nếu số lượng nhận được của tất cả các đơn hàng giống như trong đơn đặt hàng để cập nhật)
+descWORKFLOW_INVOICE_AMOUNT_CLASSIFY_BILLED_SUPPLIER_ORDER=When a vendor invoice is validated, classify linked source purchase order as billed (and if the amount of the invoice is the same as the total amount of the linked orders)
+descWORKFLOW_ORDER_CLASSIFY_RECEIVED_RECEPTION=When a reception is validated, classify linked source purchase order as received (and if the quantity received by all receptions is the same as in the purchase order to update)
+descWORKFLOW_ORDER_CLASSIFY_RECEIVED_RECEPTION_CLOSED=When a reception is closed, classify linked source purchase orders as received (and if the quantity received by all receptions issued from the purchase order is the same as in the purchase order to update)
 # Autoclassify shipment
-descWORKFLOW_SHIPPING_CLASSIFY_CLOSED_INVOICE=Phân loại lô hàng nguồn được liên kết là đã đóng khi hóa đơn của khách hàng được xác thực (và nếu số tiền trong hóa đơn giống với tổng số tiền của các lô hàng được liên kết)
-descWORKFLOW_SHIPPING_CLASSIFY_BILLED_INVOICE=Phân loại lô hàng nguồn được liên kết thành lô hàng được lập hóa đơn khi hóa đơn của khách hàng được xác thực (và nếu số tiền trong hóa đơn giống với tổng số tiền của lô hàng được liên kết)
+descWORKFLOW_SHIPPING_CLASSIFY_CLOSED_INVOICE=When a customer invoice is validated, classify the linked source shipment as closed (and if the amount of the invoice is the same as the total amount of the linked shipments)
+descWORKFLOW_SHIPPING_CLASSIFY_BILLED_INVOICE=When a customer invoice is validated, classify the linked source shipment as billed (and if the amount of the invoice is the same as the total amount of the linked shipments)
 # Autoclassify receptions
-descWORKFLOW_RECEPTION_CLASSIFY_CLOSED_INVOICE=Phân loại các khoản tiếp nhận nguồn được liên kết thành hóa đơn khi hóa đơn mua hàng được xác thực (và nếu số tiền trong hóa đơn giống với tổng số tiền của các khoản tiếp nhận được liên kết)
-descWORKFLOW_RECEPTION_CLASSIFY_BILLED_INVOICE=Phân loại các khoản tiếp nhận nguồn được liên kết thành hóa đơn khi hóa đơn mua hàng được xác thực (và nếu số tiền trong hóa đơn giống với tổng số tiền của các khoản tiếp nhận được liên kết)
+descWORKFLOW_RECEPTION_CLASSIFY_CLOSED_INVOICE=When a purchase invoice is validated, classify linked source receptions as closed (and if the amount of the invoice is the same as the total amount of the linked receptions)
+descWORKFLOW_RECEPTION_CLASSIFY_BILLED_INVOICE=When a purchase invoice is validated, classify linked source receptions as billed (and if the amount of the invoice is the same as the total amount of the linked receptions)
 # Automatically link ticket to contract
-descWORKFLOW_TICKET_LINK_CONTRACT=Khi tạo vé, liên kết tất cả các hợp đồng có sẵn của bên thứ ba phù hợp
-descWORKFLOW_TICKET_USE_PARENT_COMPANY_CONTRACTS=Khi liên kết hợp đồng, tìm kiếm trong số hợp đồng của công ty mẹ
+descWORKFLOW_TICKET_LINK_CONTRACT=When a ticket is created, link it with available contracts, matching the same third party than the ticket
+descWORKFLOW_TICKET_USE_PARENT_COMPANY_CONTRACTS=When linking automatically a ticket with contracts, search contracts among those of the parents companies
 # Autoclose intervention
 descWORKFLOW_TICKET_CLOSE_INTERVENTION=Đóng tất cả các biện pháp can thiệp liên quan đến phiếu khi phiếu bị đóng
 AutomaticCreation=Tạo tự động

@@ -15,6 +15,10 @@ ListOfBOMs=Materiallar varaqlari - BOM
 ListOfManufacturingOrders=Ishlab chiqarish buyurtmalari
 NewBOM=Yangi hisobot materiallari
 ProductBOMHelp=Ushbu BOM bilan yaratish (yoki qismlarga ajratish) uchun mahsulot. <br> Izoh: 'Mahsulotning tabiati' = 'Xomashyo' xususiyatiga ega mahsulotlar ushbu ro'yxatda ko'rinmaydi.
+CloneDefBomProduct=Clone the default BOM to use to manufacture the product
+CloneOtherBomsProduct=Clone all BOMs that can be used to manufacture the product
+BOMofRef=BOM of %s
+ErrorProductCloneBom=Error: Failed to clone a BOM
 BOMsNumberingModules=BOM raqamlash shablonlari
 BOMsModelModule=BOM hujjatlari shablonlari
 MOsNumberingModules=MO raqamlash shablonlari
@@ -65,6 +69,8 @@ ToProduce=Ishlab chiqarish
 ToObtain=Olish uchun
 QtyAlreadyConsumed=Miqdor allaqachon iste'mol qilingan
 QtyAlreadyProduced=Miqdor allaqachon ishlab chiqarilgan
+QtyAlreadyConsumedShort=Iste'mol qilingan miqdor
+QtyAlreadyProducedShort=Ishlab chiqarilgan miqdor
 QtyRequiredIfNoLoss=Agar yo'qotish bo'lmasa, BOMda belgilangan miqdorni ishlab chiqarish uchun zarur bo'lgan miqdor (ishlab chiqarish samaradorligi 100%% bo'lsa)
 ConsumeOrProduce=Iste'mol qiling yoki ishlab chiqaring
 ConsumeAndProduceAll=Hammasini iste'mol qiling va ishlab chiqaring
@@ -98,6 +104,7 @@ WorkstationSetup = Ish stantsiyalarini sozlash
 WorkstationSetupPage = Ish stantsiyalarini sozlash sahifasi
 WorkstationList=Ish stantsiyalari ro'yxati
 WorkstationCreate=Yangi ish stantsiyasini qo'shing
+NewWorkstation=New workstation
 ConfirmEnableWorkstation=<b> %s </b> ish stantsiyasini yoqishni xohlaysizmi?
 EnableAWorkstation=Ish stantsiyasini yoqing
 ConfirmDisableWorkstation=Ish stantsiyasini o'chirishni xohlaysizmi <b> %s </b>?
@@ -128,10 +135,8 @@ Manufacturing=Ishlab chiqarish
 Disassemble=Demontaj qilish
 ProducedBy=tomonidan ishlab chiqarilgan
 QtyTot=Jami miqdor
-
+MOIsClosed=Manufacturing Order is closed
 QtyCantBeSplit= Miqdorni bo'lish mumkin emas
 NoRemainQtyToDispatch=Bo'lish uchun miqdor qolmadi
-
 THMOperatorEstimatedHelp=Operatorning soatiga taxminiy narxi. Ushbu ish stantsiyasidan foydalangan holda BOM narxini baholash uchun foydalaniladi.
 THMMachineEstimatedHelp=Mashinaning soatiga taxminiy narxi. Ushbu ish stantsiyasidan foydalangan holda BOM narxini baholash uchun foydalaniladi.
-

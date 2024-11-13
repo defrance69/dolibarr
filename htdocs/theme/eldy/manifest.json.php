@@ -5,6 +5,7 @@
  * Copyright (C) 2011		Philippe Grand			<philippe.grand@atoo-net.com>
  * Copyright (C) 2012		Juanjo Menent			<jmenent@2byte.es>
  * Copyright (C) 2018       Ferran Marcet           <fmarcet@2byte.es>
+ * Copyright (C) 2024       Frédéric France         <frederic.france@free.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +55,9 @@ if (!defined('NOSESSION')) {
 }
 
 require_once __DIR__.'/../../main.inc.php';
-
+/**
+ * @var Conf $conf
+ */
 
 top_httphead('text/json');
 // Important: Following code is to avoid page request by browser and PHP CPU at each Dolibarr page access.
@@ -79,7 +82,15 @@ $manifest->short_name = $manifest->name;
 
 
 $manifest->theme_color = getDolGlobalString('MAIN_MANIFEST_APPLI_THEME_COLOR', getDolGlobalString('THEME_ELDY_TOPMENU_BACK1', '#F05F40'));
+if (!preg_match('/#[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]$/', $manifest->theme_color)) {
+	include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+	$manifest->theme_color = '#'.colorArrayToHex(colorStringToArray($manifest->theme_color));
+}
 $manifest->background_color = getDolGlobalString('MAIN_MANIFEST_APPLI_BG_COLOR', "#ffffff");
+if (!preg_match('/#[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]$/', $manifest->background_color)) {
+	include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+	$manifest->background_color = '#'.colorArrayToHex(colorStringToArray($manifest->background_color));
+}
 $manifest->display = getDolGlobalString('MAIN_MANIFEST_DISPLAY', "minimal-ui");
 $manifest->splash_pages = null;
 $manifest->icons = array();

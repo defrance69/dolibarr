@@ -1,7 +1,8 @@
 <?php
 /* Copyright (C) 2004-2022  Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2018-2019  Nicolas ZABOURI         <info@inovea-conseil.com>
- * Copyright (C) 2019-2020  Frédéric France         <frederic.france@netlogic.fr>
+ * Copyright (C) 2019-2024  Frédéric France         <frederic.france@free.fr>
+ * Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,9 +63,9 @@ class modWebhook extends DolibarrModules
 		$this->name = preg_replace('/^mod/i', '', get_class($this));
 
 		// Module description, used if translation string 'ModuleWebhookDesc' not found (Webhook is name of module).
-		$this->description = "WebhookDescription";
+		$this->description = "WebHook";
 		// Used only if file README.md and README-LL.md not found.
-		$this->descriptionlong = "WebhookDescription";
+		$this->descriptionlong = "Interface to catch dolibarr triggers and send data of the event to an external URL";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
 		$this->version = 'dolibarr';
@@ -181,7 +182,7 @@ class modWebhook extends DolibarrModules
 		// 'intervention'     to add a tab in intervention view
 		// 'invoice'          to add a tab in customer invoice view
 		// 'invoice_supplier' to add a tab in supplier invoice view
-		// 'member'           to add a tab in fundation member view
+		// 'member'           to add a tab in foundation member view
 		// 'opensurveypoll'	  to add a tab in opensurvey poll view
 		// 'order'            to add a tab in sales order view
 		// 'order_supplier'   to add a tab in supplier order view
@@ -199,7 +200,7 @@ class modWebhook extends DolibarrModules
 		/* Example:
 		$this->dictionaries=array(
 			'langs'=>'',
-			// List of tables we want to see into dictonnary editor
+			// List of tables we want to see into dictionary editor
 			'tabname'=>array(MAIN_DB_PREFIX."table1", MAIN_DB_PREFIX."table2", MAIN_DB_PREFIX."table3"),
 			// Label of tables
 			'tablib'=>array("Table1", "Table2", "Table3"),
@@ -290,8 +291,6 @@ class modWebhook extends DolibarrModules
 	 */
 	public function init($options = '')
 	{
-		global $conf, $langs;
-
 		$result = $this->_load_tables('/install/mysql/tables/', 'webhook');
 		//$result = $this->_load_tables('/webhook/sql/');
 		if ($result < 0) {
