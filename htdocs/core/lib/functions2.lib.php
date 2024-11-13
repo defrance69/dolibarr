@@ -903,12 +903,12 @@ function array2table($data, $tableMarkup = 1, $tableoptions = '', $troptions = '
  * @param   string		$table			Table containing field with counter
  * @param   string		$field			Field containing already used values of counter
  * @param   string		$where			To add a filter on selection (for example to filter on invoice types)
- * @param   Societe|''  $objsoc			The company that own the object we need a counter for
+ * @param   null|Societe|''	$objsoc		The company that own the object we need a counter for
  * @param   int|''		$date			Date to use for the {y},{m},{d} tags. is timestamp or '' to use dol_now()
  * @param   string		$mode			'next' for next value or 'last' for last value
  * @param   bool		$bentityon		Activate the entity filter. Default is true (for modules not compatible with multicompany)
- * @param	User		$objuser		Object user we need data from.
- * @param	string		$forceentity	Entity id to force, can be '0' or '1' or '1,2' etc
+ * @param	?User		$objuser		Object user we need data from.
+ * @param	?string		$forceentity	Entity id to force, can be '0' or '1' or '1,2' etc
  * @return 	string						New value (numeric) or error message
  */
 function get_next_value($db, $mask, $table, $field, $where = '', $objsoc = '', $date = '', $mode = 'next', $bentityon = true, $objuser = null, $forceentity = null)
@@ -916,7 +916,7 @@ function get_next_value($db, $mask, $table, $field, $where = '', $objsoc = '', $
 	global $user;
 
 	if (!is_object($objsoc)) {
-		$valueforccc = $objsoc;
+		$valueforccc = (string) $objsoc;
 	} elseif ($table == "commande_fournisseur" || $table == "facture_fourn" || $table == "paiementfourn") {
 		$valueforccc = dol_string_unaccent($objsoc->code_fournisseur);
 	} else {
@@ -1369,7 +1369,7 @@ function get_next_value($db, $mask, $table, $field, $where = '', $objsoc = '', $
 			if ($bentityon) { // only if entity enable
 				$maskrefclient_sql .= " AND entity IN (".getEntity($sharetable).")";
 			} elseif (!empty($forceentity)) {
-				$sql .= " AND entity IN (".$db->sanitize($forceentity).")";
+				$maskrefclient_sql .= " AND entity IN (".$db->sanitize($forceentity).")";
 			}
 			if ($where) {
 				$maskrefclient_sql .= $where; //use the same optional where as general mask
@@ -1832,7 +1832,7 @@ function dol_set_user_param($db, $conf, &$user, $tab)
 /**
  *	Returns formatted reduction
  *
- *	@param	int			$reduction		Reduction percentage
+ *	@param	int|float	$reduction		Reduction percentage
  *	@param	Translate	$langs			Output language
  *	@return	string						Formatted reduction
  */
@@ -2405,7 +2405,7 @@ function colorArrayToHex($arraycolor, $colorifnotfound = '888888')
  *  This is the opposite function of colorArrayToHex.
  *  If entry is already an array, return it.
  *
- *  @param	string						$stringcolor		String with hex (FFFFFF) or comma RGB ('255,255,255')
+ *  @param	string|array{0:int,1:int,2:int}		$stringcolor		String with hex (FFFFFF) or comma RGB ('255,255,255')
  *  @param	array{0:int,1:int,2:int}|array{}	$colorifnotfound	Color code array to return if entry not defined
  *  @return	array{0:int,1:int,2:int}	RGB hex value (without # before). For example: FF00FF
  *  @see	colorArrayToHex(), colorHexToRgb()
@@ -2413,7 +2413,7 @@ function colorArrayToHex($arraycolor, $colorifnotfound = '888888')
 function colorStringToArray($stringcolor, $colorifnotfound = array(88, 88, 88))
 {
 	if (is_array($stringcolor)) {
-		return $stringcolor; // If already into correct output format, we return as is
+		return $stringcolor; // If already in the correct output format, we return as is
 	}
 	$reg = array();
 	$tmp = preg_match('/^#?([0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F])$/', $stringcolor, $reg);
@@ -2831,7 +2831,7 @@ function price2fec($amount)
  * Check the syntax of some PHP code.
  *
  * @param 	string 			$code 	PHP code to check.
- * @return 	boolean|array 			If false, then check was successful, otherwise an array(message,line) of errors is returned.
+ * @return 	false|array{0:string,1:int}	If false, then check was successful, otherwise an array(message,line) of errors is returned.
  */
 function phpSyntaxError($code)
 {
@@ -3074,4 +3074,63 @@ function removeEmoji($text, $allowedemoji = 1)
 	}
 
 	return $text;
+}
+
+
+/**
+ * Clean a cell to respect rules of CSV file cells
+ *
+ * @param 	string	$newvalue	String to clean (must be UTF-8 encoded)
+ * @param	string	$charset	Expected output character set ('UTF-8', 'ISO-8859-1', ...). Default '' will use the value into EXPORT_CSV_FORCE_CHARSET.
+ * @param	string	$separator	CSV char separator (often ',' or ';'). Default '' will use the value into EXPORT_CSV_SEPARATOR_TO_USE.
+ * @return 	string				Value cleaned
+ */
+function csvClean($newvalue, $charset = '', $separator = '')
+{
+	global $langs;
+
+	$addquote = 0;
+
+	if (empty($charset)) {
+		$charset = getDolGlobalString('EXPORT_CSV_FORCE_CHARSET');
+	}
+	if (empty($separator)) {
+		$separator = getDolGlobalString('EXPORT_CSV_SEPARATOR_TO_USE');
+	}
+
+
+	$newvalue = $langs->convToOutputCharset($newvalue, 'UTF-8', $charset); // newvalue is now encoded into $charset
+
+
+	// Rule Dolibarr: No HTML
+	//print $charset.' '.$newvalue."\n";
+	//$newvalue=dol_string_nohtmltag($newvalue,0,$charset);
+	$newvalue = dol_htmlcleanlastbr($newvalue);
+	//print $charset.' '.$newvalue."\n";
+
+	// Rule 1 CSV: No CR, LF in cells (except if USE_STRICT_CSV_RULES is 1, we can keep record as it is but we must add quotes)
+	$oldvalue = $newvalue;
+	$newvalue = str_replace("\r", '', $newvalue);
+	$newvalue = str_replace("\n", '\n', $newvalue);
+	if (getDolGlobalString('USE_STRICT_CSV_RULES') && $oldvalue != $newvalue) {
+		// If we must use enclusure on text with CR/LF)
+		if (getDolGlobalInt('USE_STRICT_CSV_RULES') == 1) {
+			// If we use strict CSV rules (original value must remain but we add quote)
+			$newvalue = $oldvalue;
+		}
+		$addquote = 1;
+	}
+
+	// Rule 2 CSV: If value contains ", we must escape with ", and add "
+	if (preg_match('/"/', $newvalue)) {
+		$addquote = 1;
+		$newvalue = str_replace('"', '""', $newvalue);
+	}
+
+	// Rule 3 CSV: If value contains separator, we must add "
+	if (preg_match('/'.$separator.'/', $newvalue)) {
+		$addquote = 1;
+	}
+
+	return ($addquote ? '"' : '').$newvalue.($addquote ? '"' : '');
 }

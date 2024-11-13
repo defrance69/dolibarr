@@ -9,6 +9,7 @@
  * Copyright (C) 2022		Anthony Berton				<anthony.berton@bb2a.fr>
  * Copyright (C) 2024		MDW							<mdeweerd@users.noreply.github.com>
  * Copyright (C) 2024       Frédéric France             <frederic.france@free.fr>
+ * Copyright (C) 2024       Alexandre Spangaro			<alexandre@inovea-conseil.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +37,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/invoice.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
+
+/**
+ * @var Conf $conf
+ * @var DoliDB $db
+ * @var HookManager $hookmanager
+ * @var Societe $mysoc
+ * @var Translate $langs
+ * @var User $user
+ */
 
 // Load translation files required by the page
 $langs->loadLangs(array('admin', 'errors', 'other', 'bills'));
@@ -758,6 +768,17 @@ print "</select>";
 print ajax_combobox("chq", array(), 0, 0, 'resolve', '-2');
 
 print "</td></tr>";
+
+// Structured communication
+// Specific to Belgium - See core/lib/functions_be.lib.php
+if ($mysoc->country_code == 'BE') {
+	print '<tr class="oddeven"><td>' . $langs->trans("InvoicePaymentManageStructuredCommunication") . '&nbsp;';
+	print $form->textwithpicto('', $langs->trans("InvoicePaymentManageStructuredCommunicationHelp"), 1, 'help') . '</td>';
+	print '<td class="left" colspan="2">';
+	print ajax_constantonoff('INVOICE_PAYMENT_ENABLE_STRUCTURED_COMMUNICATION');
+	print '</td></tr>';
+}
+
 print "</table>";
 print '</div>';
 

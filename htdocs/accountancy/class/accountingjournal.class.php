@@ -211,7 +211,7 @@ class AccountingJournal extends CommonObject
 		}
 		if ($withlabel == 2 && !empty($this->nature)) {
 			$key = $langs->trans("AccountingJournalType".$this->nature);
-			$transferlabel = ($this->nature && $key != "AccountingJournalType".strtoupper($langs->trans($this->nature)) ? $key : $this->label);
+			$transferlabel = ($key != "AccountingJournalType".strtoupper($langs->trans($this->nature)) ? $key : $this->label);
 			$label_link .= ' - '.($nourl ? '<span class="opacitymedium">' : '').$transferlabel.($nourl ? '</span>' : '');
 		}
 
@@ -462,7 +462,7 @@ class AccountingJournal extends CommonObject
 
 			$element = array(
 				'ref' => dol_trunc($element_static->ref, 16, 'right', 'UTF-8', 1),
-				'error' => $pre_data_info['error'],
+				'error' => array_key_exists('error', $pre_data_info) ? $pre_data_info['error'] : '',
 				'blocks' => array(),
 			);
 

@@ -649,7 +649,7 @@ class Project extends CommonObject
 			$sql .= ", fk_user_close = ".($this->fk_user_close > 0 ? $this->fk_user_close : "null");
 			$sql .= ", opp_amount = ".(strcmp($this->opp_amount, '') ? price2num($this->opp_amount) : "null");
 			$sql .= ", budget_amount = ".(strcmp($this->budget_amount, '') ? price2num($this->budget_amount) : "null");
-			$sql .= ", fk_user_modif = ".$user->id;
+			$sql .= ", fk_user_modif = ".((int) $user->id);
 			$sql .= ", usage_opportunity = ".($this->usage_opportunity ? 1 : 0);
 			$sql .= ", usage_task = ".($this->usage_task ? 1 : 0);
 			$sql .= ", usage_bill_time = ".($this->usage_bill_time ? 1 : 0);
@@ -1014,7 +1014,7 @@ class Project extends CommonObject
 			'fichinter' => 'fk_projet',
 			'don' => array('field' => 'fk_projet', 'module' => 'don'),
 			'actioncomm' => 'fk_project',
-			'mrp_mo' => 'fk_project',
+			'mrp_mo' => array('field' => 'fk_project', 'module' => 'mrp'),
 			'entrepot' => 'fk_project',
 		);
 		foreach ($listoftables as $key => $value) {
@@ -1930,7 +1930,7 @@ class Project extends CommonObject
 				$tasksarray = $taskstatic->getTasksArray(null, null, $fromid, $socid, 0);
 
 				$tab_conv_child_parent = array();
-				$result_clonse = 0;
+				$result_clone = 0;
 
 				// Loop on each task, to clone it
 				foreach ($tasksarray as $tasktoclone) {

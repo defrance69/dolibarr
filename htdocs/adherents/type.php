@@ -39,6 +39,14 @@ require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent_type.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 
+/**
+ * @var Conf $conf
+ * @var DoliDB $db
+ * @var HookManager $hookmanager
+ * @var Translate $langs
+ * @var User $user
+ */
+
 // Load translation files required by the page
 $langs->load("members");
 
@@ -100,6 +108,25 @@ $hookmanager->initHooks(array('membertypecard', 'globalcard'));
 // Fetch optionals attributes and labels
 $extrafields->fetch_name_optionals_label($object->table_element);
 
+
+// Definition of array of fields for columns
+$tableprefix = 't';
+$arrayfields = array();
+foreach ($object->fields as $key => $val) {
+	// If $val['visible']==0, then we never show the field
+	if (!empty($val['visible'])) {
+		$visible = (int) dol_eval((string) $val['visible'], 1);
+		$arrayfields[$tableprefix.'.'.$key] = array(
+			'label' => $val['label'],
+			'checked' => (($visible < 0) ? 0 : 1),
+			'enabled' => (abs($visible) != 3 && (bool) dol_eval($val['enabled'], 1)),
+			'position' => $val['position'],
+			'help' => isset($val['help']) ? $val['help'] : ''
+		);
+	}
+}
+
+
 // Security check
 $result = restrictedArea($user, 'adherent', $rowid, 'adherent_type');
 
@@ -107,6 +134,7 @@ $result = restrictedArea($user, 'adherent', $rowid, 'adherent_type');
 /*
  *	Actions
  */
+$error = 0;
 
 if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
 	$search_ref = "";
@@ -309,7 +337,7 @@ if (!$rowid && $action != 'create' && $action != 'edit') {
 		$moreforfilter = '';
 
 		print '<div class="div-table-responsive">';
-		print '<table class="tagtable liste'.($moreforfilter ? " listwithfilterbefore" : "").'">'."\n";
+		print '<table class="tagtable noborder liste'.($moreforfilter ? " listwithfilterbefore" : "").'">'."\n";
 
 		print '<tr class="liste_titre">';
 		if (getDolGlobalString('MAIN_CHECKBOX_LEFT_COLUMN')) {
@@ -420,16 +448,18 @@ if (!$rowid && $action != 'create' && $action != 'edit') {
 			$i++;
 		}
 
+		// Show total line
+		include DOL_DOCUMENT_ROOT.'/core/tpl/list_print_total.tpl.php';
+
 		// If no record found
 		if ($num == 0) {
-			/*$colspan = 1;
+			$colspan = 1;
 			foreach ($arrayfields as $key => $val) {
-				if (!empty($val['checked'])) {
+				//if (!empty($val['checked'])) {
 					$colspan++;
-				}
-			}*/
-			$colspan = 9;
-			print '<tr><td colspan="'.$colspan.'" class="opacitymedium">'.$langs->trans("NoRecordFound").'</td></tr>';
+				//}
+			}
+			print '<tr><td colspan="'.$colspan.'"><span class="opacitymedium">'.$langs->trans("NoRecordFound").'</span></td></tr>';
 		}
 
 		print "</table>";

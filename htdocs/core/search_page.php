@@ -41,6 +41,14 @@ if (!defined('NOREQUIREMENU')) {
 //if (! defined('NOREQUIREHTML'))  define('NOREQUIREHTML',1);
 
 require_once '../main.inc.php';
+/**
+ * @var Conf $conf
+ * @var DoliDB $db
+ * @var Form $form
+ * @var HookManager $hookmanager
+ * @var Translate $langs
+ * @var User $user
+ */
 
 if (GETPOST('lang', 'aZ09')) {
 	$langs->setDefaultLang(GETPOST('lang', 'aZ09')); // If language was forced on URL by the main.inc.php
@@ -113,8 +121,6 @@ top_htmlhead($head, $title, 0, 0, $arrayofjs, $arrayofcss);
 print '<body>'."\n";
 print '<div>';
 //print '<br>';
-
-$nbofsearch = 0;
 
 // Instantiate hooks of thirdparty module
 $hookmanager->initHooks(array('searchform'));

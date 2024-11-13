@@ -597,6 +597,9 @@ class CMailFile
 				$msg = $this->checkIfHTML($msg);		// This add a header and a body including custom CSS to the HTML content
 			}
 
+			if ($msg === '.') {
+				$msg = "\n.\n";
+			}
 			// Replace . alone on a new line with .. to avoid to have SMTP interpret this as end of message
 			$msg = preg_replace('/(\r|\n)\.(\r|\n)/ims', '\1..\2', $msg);
 
@@ -1113,14 +1116,18 @@ class CMailFile
 					$keyforsupportedoauth2array = 'OAUTH_'.$keyforsupportedoauth2array.'_NAME';
 
 					if (!empty($supportedoauth2array)) {
-						$OAUTH_SERVICENAME = (empty($supportedoauth2array[$keyforsupportedoauth2array]['name']) ? 'Unknown' : $supportedoauth2array[$keyforsupportedoauth2array]['name'].($keyforprovider ? '-'.$keyforprovider : ''));
+						$nameofservice = ucfirst(strtolower(empty($supportedoauth2array[$keyforsupportedoauth2array]['callbackfile']) ? 'Unknown' : $supportedoauth2array[$keyforsupportedoauth2array]['callbackfile']));
+						$nameofservice .= ($keyforprovider ? '-'.$keyforprovider : '');
+						$OAUTH_SERVICENAME = $nameofservice;
 					} else {
 						$OAUTH_SERVICENAME = 'Unknown';
 					}
 
+					$keyforparamtenant = 'OAUTH_'.strtoupper(empty($supportedoauth2array[$keyforsupportedoauth2array]['callbackfile']) ? 'Unknown' : $supportedoauth2array[$keyforsupportedoauth2array]['callbackfile']).($keyforprovider ? '-'.$keyforprovider : '').'_TENANT';
+
 					require_once DOL_DOCUMENT_ROOT.'/includes/OAuth/bootstrap.php';
 
-					$storage = new DoliStorage($db, $conf, $keyforprovider);
+					$storage = new DoliStorage($db, $conf, $keyforprovider, getDolGlobalString($keyforparamtenant));
 					try {
 						$tokenobj = $storage->retrieveAccessToken($OAUTH_SERVICENAME);
 
@@ -1255,10 +1262,10 @@ class CMailFile
 				$this->transport = new Swift_SmtpTransport($server, getDolGlobalInt($keyforsmtpport), $secure);
 
 				if (getDolGlobalString($keyforsmtpid)) {
-					$this->transport->setUsername($conf->global->$keyforsmtpid);
+					$this->transport->setUsername(getDolGlobalString($keyforsmtpid));
 				}
 				if (getDolGlobalString($keyforsmtppw) && getDolGlobalString($keyforsmtpauthtype) != "XOAUTH2") {
-					$this->transport->setPassword($conf->global->$keyforsmtppw);
+					$this->transport->setPassword(getDolGlobalString($keyforsmtppw));
 				}
 				if (getDolGlobalString($keyforsmtpauthtype) === "XOAUTH2") {
 					require_once DOL_DOCUMENT_ROOT.'/core/lib/oauth.lib.php';
@@ -1274,16 +1281,19 @@ class CMailFile
 					$keyforsupportedoauth2array = preg_replace('/-.*$/', '', $keyforsupportedoauth2array);
 					$keyforsupportedoauth2array = 'OAUTH_'.$keyforsupportedoauth2array.'_NAME';
 
-					$OAUTH_SERVICENAME = 'Unknown';
-					if (array_key_exists($keyforsupportedoauth2array, $supportedoauth2array)
-						&& array_key_exists('name', $supportedoauth2array[$keyforsupportedoauth2array])
-						&& !empty($supportedoauth2array[$keyforsupportedoauth2array]['name'])) {
-						$OAUTH_SERVICENAME = $supportedoauth2array[$keyforsupportedoauth2array]['name'].(!empty($keyforprovider) ? '-'.$keyforprovider : '');
+					if (!empty($supportedoauth2array)) {
+						$nameofservice = ucfirst(strtolower(empty($supportedoauth2array[$keyforsupportedoauth2array]['callbackfile']) ? 'Unknown' : $supportedoauth2array[$keyforsupportedoauth2array]['callbackfile']));
+						$nameofservice .= ($keyforprovider ? '-'.$keyforprovider : '');
+						$OAUTH_SERVICENAME = $nameofservice;
+					} else {
+						$OAUTH_SERVICENAME = 'Unknown';
 					}
+
+					$keyforparamtenant = 'OAUTH_'.strtoupper(empty($supportedoauth2array[$keyforsupportedoauth2array]['callbackfile']) ? 'Unknown' : $supportedoauth2array[$keyforsupportedoauth2array]['callbackfile']).($keyforprovider ? '-'.$keyforprovider : '').'_TENANT';
 
 					require_once DOL_DOCUMENT_ROOT.'/includes/OAuth/bootstrap.php';
 
-					$storage = new DoliStorage($db, $conf, $keyforprovider);
+					$storage = new DoliStorage($db, $conf, $keyforprovider, getDolGlobalString($keyforparamtenant));
 
 					try {
 						$tokenobj = $storage->retrieveAccessToken($OAUTH_SERVICENAME);
@@ -1611,8 +1621,12 @@ class CMailFile
 		if (getDolGlobalString('MAIN_MAIL_SENDMAIL_FORCE_BA')) {
 			$out .= "To: ".$this->getValidAddress($this->addr_to, 0, 1).$this->eol2;
 		}
-		// Return-Path is important because it is used by SPF. Some MTA does not read Return-Path from header but from command line. See option MAIN_MAIL_ALLOW_SENDMAIL_F for that.
-		$out .= "Return-Path: ".$this->getValidAddress($this->addr_from, 0, 1).$this->eol2;
+		if (!getDolGlobalString('MAIN_MAIL_NO_RETURN_PATH_FOR_MODE_MAIL')) {
+			// Return-Path is important because it is used by SPF. Some command line MTA overwrites the Return-Path, even if already in the
+			// SMTP header, with a value guessed by command line tool. See option MAIN_MAIL_ALLOW_SENDMAIL_F to provide email to the command line tool.
+			// Return-Path is used for bounced emails. If not set (most cases), the From is used.
+			$out .= "Return-Path: ".$this->getValidAddress($this->addr_from, 1, 1).$this->eol2;
+		}
 		if (isset($this->reply_to) && $this->reply_to) {
 			$out .= "Reply-To: ".$this->getValidAddress($this->reply_to, 2).$this->eol2;
 		}
@@ -1634,7 +1648,6 @@ class CMailFile
 		}
 
 		//$out.= "X-Priority: 3".$this->eol2;
-
 		$out .= 'Date: '.date("r").$this->eol2;
 
 		$trackid = $this->trackid;
@@ -2181,8 +2194,6 @@ class CMailFile
 	 */
 	public static function getValidAddress($address, $format, $encode = 0, $maxnumberofemail = 0)
 	{
-		global $conf;
-
 		$ret = '';
 
 		$arrayaddress = (!empty($address) ? explode(',', $address) : array());
@@ -2223,6 +2234,7 @@ class CMailFile
 						$newemail = '<'.$email.'>';
 					} else {
 						$newemail = ($format == 3 ? '"' : '').($encode ? self::encodetorfc2822($name) : $name).($format == 3 ? '"' : '').' <'.$email.'>';
+						//$newemail = (($format == 3 && !$encode) ? '"' : '').($encode ? self::encodetorfc2822($name) : $name).(($format == 3 && !$encode) ? '"' : '').' <'.$email.'>';
 					}
 				}
 

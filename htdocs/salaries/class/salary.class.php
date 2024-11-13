@@ -1,9 +1,9 @@
 <?php
-/* Copyright (C) 2011-2022  Alexandre Spangaro  <aspangaro@open-dsi.fr>
- * Copyright (C) 2014       Juanjo Menent       <jmenent@2byte.es>
- * Copyright (C) 2021       Gauthier VERDOL     <gauthier.verdol@atm-consulting.fr>
- * Copyright (C) 2024       Frédéric France             <frederic.france@free.fr>
- * Copyright (C) 2024		MDW							<mdeweerd@users.noreply.github.com>
+/* Copyright (C) 2011-2022  Alexandre Spangaro      <aspangaro@open-dsi.fr>
+ * Copyright (C) 2014       Juanjo Menent           <jmenent@2byte.es>
+ * Copyright (C) 2021       Gauthier VERDOL         <gauthier.verdol@atm-consulting.fr>
+ * Copyright (C) 2024       Frédéric France         <frederic.france@free.fr>
+ * Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,10 +67,22 @@ class Salary extends CommonObject
 	 */
 	public $fk_user;
 
+	/**
+	 * @var int|string
+	 */
 	public $datep;
+	/**
+	 * @var int|string
+	 */
 	public $datev;
 
+	/**
+	 * @var string
+	 */
 	public $salary;
+	/**
+	 * @var float|string
+	 */
 	public $amount;
 
 	/**
@@ -78,7 +90,13 @@ class Salary extends CommonObject
 	 */
 	public $fk_project;
 
+	/**
+	 * @var int
+	 */
 	public $type_payment;	// TODO Rename into type_payment_id
+	/**
+	 * @var string
+	 */
 	public $type_payment_code;
 
 	/**
@@ -86,7 +104,13 @@ class Salary extends CommonObject
 	 */
 	public $label;
 
+	/**
+	 * @var int|string
+	 */
 	public $datesp;
+	/**
+	 * @var int|string
+	 */
 	public $dateep;
 
 	/**
@@ -116,19 +140,22 @@ class Salary extends CommonObject
 	public $fk_user_modif;
 
 	/**
-	 * @var user	User
+	 * @var User
 	 */
 	public $user;
 
 	/**
-	 * @var int 1 if salary paid COMPLETELY, 0 otherwise (do not use it anymore, use statut and close_code)
-	 * @deprecated
+	 * @var int<0,1> 1 if salary paid COMPLETELY, 0 otherwise (do not use it anymore, use statut and close_code)
+	 * @deprecated Use $status and $close_code
 	 */
 	public $paye;
 
 	const STATUS_UNPAID = 0;
 	const STATUS_PAID = 1;
 
+	/**
+	 * @var string
+	 */
 	public $resteapayer;
 
 	public $fields = array(
@@ -705,7 +732,7 @@ class Salary extends CommonObject
 	/**
 	 *    Tag social contribution as paid completely
 	 *
-	 *	  @deprecated
+	 *	  @deprecated Use setPaid()
 	 *    @see setPaid()
 	 *    @param    User    $user       Object user making change
 	 *    @return   int					Return integer <0 if KO, >0 if OK
@@ -847,7 +874,9 @@ class Salary extends CommonObject
 			$return .= '<input id="cb'.$this->id.'" class="flat checkforselect fright" type="checkbox" name="toselect[]" value="'.$this->id.'"'.($selected ? ' checked="checked"' : '').'>';
 		}
 		if (!empty($arraydata['user']) && is_object($arraydata['user'])) {
-			$return .= '<br><span class="info-box-label">'.$arraydata['user']->getNomUrl(empty($arraydata['user']->photo) ? 1 : -1, '', 0, 0, 16, 0, '', 'maxwidth100').'</span>';
+			$user = $arraydata['user'];
+			'@phan-var-force User $user';
+			$return .= '<br><span class="info-box-label">'.$user->getNomUrl(empty($arraydata['user']->photo) ? 1 : -1, '', 0, 0, 16, 0, '', 'maxwidth100').'</span>';
 		}
 		if (property_exists($this, 'amount')) {
 			$return .= '<br><span class="info-box-label amount">'.price($this->amount).'</span>';

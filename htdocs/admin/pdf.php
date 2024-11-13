@@ -1,11 +1,14 @@
 <?php
-/* Copyright (C) 2001-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2022 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2011 Regis Houssin        <regis.houssin@inodbox.com>
- * Copyright (C) 2012-2107 Juanjo Menent		<jmenent@2byte.es>
- * Copyright (C) 2019	   Ferran Marcet		<fmarcet@2byte.es>
- * Copyright (C) 2021-2022 Anthony Berton		<bertonanthony@gmail.com>
+/* Copyright (C) 2001-2005	Rodolphe Quiedeville		<rodolphe@quiedeville.org>
+ * Copyright (C) 2004-2022	Laurent Destailleur			<eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2011	Regis Houssin				<regis.houssin@inodbox.com>
+ * Copyright (C) 2012-2017	Juanjo Menent				<jmenent@2byte.es>
+ * Copyright (C) 2019		Ferran Marcet				<fmarcet@2byte.es>
+ * Copyright (C) 2021-2022	Anthony Berton				<bertonanthony@gmail.com>
  * Copyright (C) 2024		MDW							<mdeweerd@users.noreply.github.com>
+ * Copyright (C) 2024		Nick Fragoulis
+ * Copyright (C) 2024		Alexandre Spangaro			<alexandre@inovea-conseil.com>
+ * Copyright (C) 2024       Frédéric France         <frederic.france@free.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +37,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
+
+/**
+ * @var Conf $conf
+ * @var DoliDB $db
+ * @var HookManager $hookmanager
+ * @var Societe $mysoc
+ * @var Translate $langs
+ * @var User $user
+ */
 
 // Load translation files required by the page
 $langs->loadLangs(array('admin', 'companies', 'languages', 'members', 'other', 'products', 'stocks', 'trips'));
@@ -139,6 +151,9 @@ if ($action == 'update') {
 
 	if (GETPOSTISSET('MAIN_DOCUMENTS_LOGO_HEIGHT')) {
 		dolibarr_set_const($db, "MAIN_DOCUMENTS_LOGO_HEIGHT", GETPOSTINT("MAIN_DOCUMENTS_LOGO_HEIGHT"), 'chaine', 0, '', $conf->entity);
+	}
+	if (GETPOSTISSET('MAIN_PDF_FRAME_CORNER_RADIUS')) {
+		dolibarr_set_const($db, "MAIN_PDF_FRAME_CORNER_RADIUS", GETPOSTINT("MAIN_PDF_FRAME_CORNER_RADIUS"), 'chaine', 0, '', $conf->entity);
 	}
 	if (GETPOSTISSET('MAIN_INVERT_SENDER_RECIPIENT')) {
 		dolibarr_set_const($db, "MAIN_INVERT_SENDER_RECIPIENT", GETPOST("MAIN_INVERT_SENDER_RECIPIENT"), 'chaine', 0, '', $conf->entity);
@@ -516,6 +531,14 @@ print '<tr class="oddeven"><td>'.$langs->trans("MAIN_DOCUMENTS_LOGO_HEIGHT").'</
 print '<input type="text" class="maxwidth50" name="MAIN_DOCUMENTS_LOGO_HEIGHT" value="'.getDolGlobalInt('MAIN_DOCUMENTS_LOGO_HEIGHT', 20).'">';
 print '</td></tr>';
 
+// Frame corner radius
+print '<tr class="oddeven"><td>';
+print $form->textwithpicto($langs->trans("PDFBoxFrameRoundedCorners"), $langs->trans("MAIN_PDF_FRAME_CORNER_RADIUS"));
+print '</td><td>';
+$arrval = array('0', '1', '2', '3');
+print $form->selectarray("MAIN_PDF_FRAME_CORNER_RADIUS", $arrval, getDolGlobalInt('MAIN_PDF_FRAME_CORNER_RADIUS', 0));
+print '</td></tr>';
+
 // Show project
 if (isModEnabled('project')) {
 	print '<tr class="oddeven"><td>'.$langs->trans("PDF_SHOW_PROJECT").'</td><td>';
@@ -525,8 +548,7 @@ if (isModEnabled('project')) {
 	print '</td></tr>';
 }
 
-//
-
+// Hide customer code
 print '<tr class="oddeven"><td>'.$langs->trans("MAIN_PDF_HIDE_CUSTOMER_CODE");
 print '</td><td>';
 if ($conf->use_javascript_ajax) {
@@ -537,8 +559,18 @@ if ($conf->use_javascript_ajax) {
 }
 print '</td></tr>';
 
-// Ref
+// Hide accounting customer code
+print '<tr class="oddeven"><td>'.$langs->trans("MAIN_PDF_HIDE_CUSTOMER_ACCOUNTING_CODE");
+print '</td><td>';
+if ($conf->use_javascript_ajax) {
+	print ajax_constantonoff('MAIN_PDF_HIDE_CUSTOMER_ACCOUNTING_CODE');
+} else {
+	$arrval = array('0' => $langs->trans("No"), '1' => $langs->trans("Yes"));
+	print $form->selectarray("MAIN_PDF_HIDE_CUSTOMER_ACCOUNTING_CODE", $arrval, getDolGlobalString('MAIN_PDF_HIDE_CUSTOMER_ACCOUNTING_CODE'));
+}
+print '</td></tr>';
 
+// Hide Ref
 print '<tr class="oddeven"><td>'.$langs->trans("HideRefOnPDF").'</td><td>';
 if ($conf->use_javascript_ajax) {
 	print ajax_constantonoff('MAIN_GENERATE_DOCUMENTS_HIDE_REF');

@@ -133,13 +133,13 @@ class ExpeditionLigne extends CommonObjectLine
 	/**
 	 * Detail of lot and qty = array(id in llx_expeditiondet_batch, fk_expeditiondet, batch, qty, fk_origin_stock)
 	 * We can use this to know warehouse planned to be used for each lot.
-	 * @var stdClass|array{ExpeditionLineBatch}
+	 * @var stdClass|ExpeditionLineBatch[]
 	 */
 	public $detail_batch;
 
 	/** detail of warehouses and qty
 	 * We can use this to know warehouse when there is no lot.
-	 * @var array{stdClass}
+	 * @var stdClass[]
 	 */
 	public $details_entrepot;
 
@@ -511,8 +511,8 @@ class ExpeditionLigne extends CommonObjectLine
 		$qty = price2num($this->qty);
 		$remainingQty = 0;
 		$batch = null;
-		$batch_id = null;
-		$expedition_batch_id = null;
+		$batch_id = 0;
+		$expedition_batch_id = 0;
 		if (is_array($this->detail_batch)) { 	// array of ExpeditionLineBatch
 			if (count($this->detail_batch) > 1) {
 				dol_syslog(get_class($this).'::update only possible for one batch', LOG_ERR);
@@ -605,7 +605,7 @@ class ExpeditionLigne extends CommonObjectLine
 						$shipmentLot->sellby = $lot->sellby;
 						$shipmentLot->entrepot_id = $this->detail_batch->entrepot_id;
 						$shipmentLot->qty = $this->detail_batch->qty;
-						$shipmentLot->fk_origin_stock = $batch_id;
+						$shipmentLot->fk_origin_stock = (int) $batch_id;
 						if ($shipmentLot->create($this->id) < 0) {
 							$this->errors = $shipmentLot->errors;
 							$error++;

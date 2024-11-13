@@ -59,6 +59,15 @@ if (isModEnabled('paypal')) {
 	require_once DOL_DOCUMENT_ROOT.'/paypal/lib/paypal.lib.php';
 	require_once DOL_DOCUMENT_ROOT.'/paypal/lib/paypalfunctions.lib.php';
 }
+/**
+ * @var Conf $conf
+ * @var DoliDB $db
+ * @var HookManager $hookmanager
+ * @var Societe $mysoc
+ * @var Translate $langs
+ *
+ * @var string $dolibarr_main_url_root
+ */
 
 // Hook to be used by external payment modules (ie Payzen, ...)
 $hookmanager = new HookManager($db);
@@ -1903,6 +1912,10 @@ if (empty($doactionsthenredirect)) {
 		if ($TRANSACTIONID) {
 			print $langs->trans("ThisIsTransactionId", $TRANSACTIONID)."<br><br>\n";
 		}
+
+		print '<center>';
+		print img_picto('', 'tick', 'class="green fa-2x"');
+		print '</center>';
 
 		// Show a custom message
 		$key = 'ONLINE_PAYMENT_MESSAGE_OK';

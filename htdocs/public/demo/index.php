@@ -359,9 +359,9 @@ foreach ($demoprofiles as $profilearray) {
 		print '</a>';
 
 
-		// Modules (a profile you must choose modules)
+		// Modules (a profile to customize by selecting modules)
 		if (empty($profilearray['url'])) {
-			print '<div id="tr1'.$profilearray['key'].'" class="moduleline hidden" style="margin-left: 8px; margin-right: 8px; text-align: justify; font-size:0.75em; padding-bottom: 8px">';
+			print '<div id="tr1'.$profilearray['key'].'" class="moduleline hidden" style="text-align: justify; font-size:0.75em; padding-bottom: 8px">';
 
 			print '<span class="opacitymedium small">'.$langs->trans("ThisIsListOfModules").'</span><br><br>';
 
@@ -471,11 +471,15 @@ $db->close();
 /**
  * Show header for demo
  *
- * @param 	string		$title		Title
- * @param 	string		$head		Head string
+ * @param 	string		$title				Title
+ * @param 	string		$head				Head array
+ * @param 	int    		$disablejs			More content into html header
+ * @param 	int    		$disablehead		More content into html header
+ * @param 	string[]|string	$arrayofjs			Array of complementary js files
+ * @param 	string[]|string	$arrayofcss			Array of complementary css files
  * @return	void
  */
-function llxHeaderVierge($title, $head = "")
+function llxHeaderVierge($title, $head = "", $disablejs = 0, $disablehead = 0, $arrayofjs = [], $arrayofcss = [])
 {
 	top_httphead();
 

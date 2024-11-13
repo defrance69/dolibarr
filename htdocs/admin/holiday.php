@@ -32,6 +32,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/holiday/class/holiday.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/holiday.lib.php';
 
+/**
+ * @var Conf $conf
+ * @var DoliDB $db
+ * @var HookManager $hookmanager
+ * @var Societe $mysoc
+ * @var Translate $langs
+ * @var User $user
+ */
+
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "errors", "holiday"));
 
@@ -55,6 +64,7 @@ if (!getDolGlobalString('HOLIDAY_ADDON')) {
 /*
  * Actions
  */
+$error = 0;
 
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
@@ -531,6 +541,22 @@ if ($conf->use_javascript_ajax) {
 		print '<a href="'.$_SERVER['PHP_SELF'].'?action=set_other&token='.newToken().'&MAIN_NON_WORKING_DAYS_INCLUDE_SUNDAY=1">'.img_picto($langs->trans("Enabled"), 'on').'</a>';
 	} else {
 		print '<a href="'.$_SERVER['PHP_SELF'].'?action=set_other&token='.newToken().'&MAIN_NON_WORKING_DAYS_INCLUDE_SUNDAY=0">'.img_picto($langs->trans("Disabled"), 'off').'</a>';
+	}
+}
+print "</td>";
+print "</tr>";
+
+// Set holiday decrease at the end of month
+print '<tr class="oddeven">';
+print "<td>".$langs->trans("ConsumeHolidaysAtTheEndOfTheMonthTheyAreTakenAt")."</td>";
+print '<td class="center">';
+if ($conf->use_javascript_ajax) {
+	print ajax_constantonoff('HOLIDAY_DECREASE_AT_END_OF_MONTH', array(), null, 0, 0, 0, 2, 0, 1);
+} else {
+	if (getDolGlobalString('HOLIDAY_DECREASE_AT_END_OF_MONTH')) {
+		print '<a href="'.$_SERVER['PHP_SELF'].'?action=set_other&token='.newToken().'&HOLIDAY_DECREASE_AT_END_OF_MONTH=1">'.img_picto($langs->trans("Enabled"), 'on').'</a>';
+	} else {
+		print '<a href="'.$_SERVER['PHP_SELF'].'?action=set_other&token='.newToken().'&HOLIDAY_DECREASE_AT_END_OF_MONTH=0">'.img_picto($langs->trans("Disabled"), 'off').'</a>';
 	}
 }
 print "</td>";

@@ -24,6 +24,16 @@
  * $form
  */
 
+/**
+ * @var CommonObject $object
+ * @var Conf $conf
+ * @var Form $form
+ * @var FormAdmin $formadmin
+ * @var Translate $langs
+ *
+ * @var string $action
+ */
+
 // Protection to avoid direct call of template
 if (empty($conf) || !is_object($conf)) {
 	print "Error, template page can't be called as URL";
@@ -95,6 +105,7 @@ foreach ($object->fields as $key => $val) {
 	} elseif ($val['type'] == 'price') {
 		$value = GETPOSTISSET($key) ? price2num(GETPOST($key)) : price2num($object->$key);
 	} elseif ($key == 'lang') {
+		// @phan-suppress-next-line PhanUndeclaredProperty
 		$value = GETPOSTISSET($key) ? GETPOST($key, 'aZ09') : $object->lang;
 	} else {
 		$value = GETPOSTISSET($key) ? GETPOST($key, 'alpha') : $object->$key;

@@ -1421,7 +1421,7 @@ class Commande extends CommonOrder
 		$this->origin_id = $object->id;
 
 		// Multicurrency (test on $this->multicurrency_tx because we should take the default rate only if not using origin rate)
-		if (!empty($conf->multicurrency->enabled)) {
+		if (isModEnabled('multicurrency')) {
 			if (!empty($object->multicurrency_code)) {
 				$this->multicurrency_code = $object->multicurrency_code;
 			}
@@ -1697,14 +1697,14 @@ class Commande extends CommonOrder
 			$this->line->product_type = $product_type;
 			$this->line->fk_remise_except = $fk_remise_except;
 			$this->line->remise_percent = $remise_percent;
-			$this->line->subprice = $pu_ht;
+			$this->line->subprice = (float) $pu_ht;
 			$this->line->rang = $ranktouse;
 			$this->line->info_bits = $info_bits;
-			$this->line->total_ht = $total_ht;
-			$this->line->total_tva = $total_tva;
-			$this->line->total_localtax1 = $total_localtax1;
-			$this->line->total_localtax2 = $total_localtax2;
-			$this->line->total_ttc = $total_ttc;
+			$this->line->total_ht = (float) $total_ht;
+			$this->line->total_tva = (float) $total_tva;
+			$this->line->total_localtax1 = (float) $total_localtax1;
+			$this->line->total_localtax2 = (float) $total_localtax2;
+			$this->line->total_ttc = (float) $total_ttc;
 			$this->line->special_code = $special_code;
 			$this->line->origin = $origin;
 			$this->line->origin_id = $origin_id;
@@ -1720,10 +1720,10 @@ class Commande extends CommonOrder
 			// Multicurrency
 			$this->line->fk_multicurrency = $this->fk_multicurrency;
 			$this->line->multicurrency_code = $this->multicurrency_code;
-			$this->line->multicurrency_subprice		= $pu_ht_devise;
-			$this->line->multicurrency_total_ht 	= $multicurrency_total_ht;
-			$this->line->multicurrency_total_tva 	= $multicurrency_total_tva;
-			$this->line->multicurrency_total_ttc 	= $multicurrency_total_ttc;
+			$this->line->multicurrency_subprice		= (float) $pu_ht_devise;
+			$this->line->multicurrency_total_ht 	= (float) $multicurrency_total_ht;
+			$this->line->multicurrency_total_tva 	= (float) $multicurrency_total_tva;
+			$this->line->multicurrency_total_ttc 	= (float) $multicurrency_total_ttc;
 
 			// TODO Ne plus utiliser
 			$this->line->price = $price;
@@ -2056,17 +2056,17 @@ class Commande extends CommonOrder
 			$line->desc = $remise->description; // Description ligne
 			$line->vat_src_code = $remise->vat_src_code;
 			$line->tva_tx = $remise->tva_tx;
-			$line->subprice = -$remise->amount_ht;
-			$line->price = -$remise->amount_ht;
+			$line->subprice = -(float) $remise->amount_ht;
+			$line->price = -(float) $remise->amount_ht;
 			$line->fk_product = 0; // Id produit predefini
 			$line->qty = 1;
 			$line->remise_percent = 0;
 			$line->rang = -1;
 			$line->info_bits = 2;
 
-			$line->total_ht  = -$remise->amount_ht;
-			$line->total_tva = -$remise->amount_tva;
-			$line->total_ttc = -$remise->amount_ttc;
+			$line->total_ht  = -(float) $remise->amount_ht;
+			$line->total_tva = -(float) $remise->amount_tva;
+			$line->total_ttc = -(float) $remise->amount_ttc;
 
 			$result = $line->insert();
 			if ($result > 0) {
@@ -2741,15 +2741,15 @@ class Commande extends CommonOrder
 	/**
 	 *  Return list of orders (eventuelly filtered on a user) into an array
 	 *
-	 *  @param		int		$shortlist		0=Return array[id]=ref, 1=Return array[](id=>id,ref=>ref,name=>name)
-	 *  @param      int		$draft      	0=not draft, 1=draft
-	 *  @param      User	$excluser      	Object user to exclude
-	 *  @param    	int		$socid			Id third party
-	 *  @param    	int		$limit			For pagination
-	 *  @param    	int		$offset			For pagination
-	 *  @param    	string	$sortfield		Sort criteria
-	 *  @param    	string	$sortorder		Sort order
-	 *  @return     int|array             		-1 if KO, array with result if OK
+	 *  @param		int<0,1>	$shortlist		0=Return array[id]=ref, 1=Return array[](id=>id,ref=>ref,name=>name)
+	 *  @param      int<0,1>	$draft      	0=not draft, 1=draft
+	 *  @param      ?User		$excluser      	Object user to exclude
+	 *  @param    	int			$socid			Id third party
+	 *  @param    	int			$limit			For pagination
+	 *  @param    	int			$offset			For pagination
+	 *  @param    	string		$sortfield		Sort criteria
+	 *  @param    	string		$sortorder		Sort order
+	 *  @return     array<int,string>|array<int,array{id:int,ref:string,name:string}>|int<-1,-1>	-1 if KO, array with result if OK
 	 */
 	public function liste_array($shortlist = 0, $draft = 0, $excluser = null, $socid = 0, $limit = 0, $offset = 0, $sortfield = 'c.date_commande', $sortorder = 'DESC')
 	{
@@ -3230,7 +3230,7 @@ class Commande extends CommonOrder
 				$price = ((float) $pu - $remise);
 			}
 
-			//Fetch current line from the database and then clone the object and set it in $oldline property
+			// Fetch current line from the database and then clone the object and set it in $oldline property
 			$line = new OrderLine($this->db);
 			$line->fetch($rowid);
 			$line->fetch_optionals();
@@ -3278,14 +3278,14 @@ class Commande extends CommonOrder
 			$this->line->localtax1_type = empty($localtaxes_type[0]) ? '' : $localtaxes_type[0];
 			$this->line->localtax2_type = empty($localtaxes_type[2]) ? '' : $localtaxes_type[2];
 			$this->line->remise_percent = $remise_percent;
-			$this->line->subprice       = $pu_ht;
+			$this->line->subprice       = (float) $pu_ht;
 			$this->line->info_bits      = $info_bits;
 			$this->line->special_code   = $special_code;
-			$this->line->total_ht       = $total_ht;
-			$this->line->total_tva      = $total_tva;
-			$this->line->total_localtax1 = $total_localtax1;
-			$this->line->total_localtax2 = $total_localtax2;
-			$this->line->total_ttc      = $total_ttc;
+			$this->line->total_ht       = (float) $total_ht;
+			$this->line->total_tva      = (float) $total_tva;
+			$this->line->total_localtax1 = (float) $total_localtax1;
+			$this->line->total_localtax2 = (float) $total_localtax2;
+			$this->line->total_ttc      = (float) $total_ttc;
 			$this->line->date_start     = $date_start;
 			$this->line->date_end       = $date_end;
 			$this->line->product_type   = $type;
@@ -3297,10 +3297,10 @@ class Commande extends CommonOrder
 			$this->line->pa_ht = $pa_ht;
 
 			// Multicurrency
-			$this->line->multicurrency_subprice		= $pu_ht_devise;
-			$this->line->multicurrency_total_ht 	= $multicurrency_total_ht;
-			$this->line->multicurrency_total_tva 	= $multicurrency_total_tva;
-			$this->line->multicurrency_total_ttc 	= $multicurrency_total_ttc;
+			$this->line->multicurrency_subprice		= (float) $pu_ht_devise;
+			$this->line->multicurrency_total_ht 	= (float) $multicurrency_total_ht;
+			$this->line->multicurrency_total_tva 	= (float) $multicurrency_total_tva;
+			$this->line->multicurrency_total_ttc 	= (float) $multicurrency_total_ttc;
 
 			// TODO deprecated
 			$this->line->price = $price;
@@ -3788,7 +3788,7 @@ class Commande extends CommonOrder
 		}
 
 		if ($user->hasRight('commande', 'lire')) {
-			$datas['picto'] = img_picto('', $this->picto).' <u class="paddingrightonly">'.$langs->trans("Order").'</u>';
+			$datas['picto'] = img_picto('', $this->picto, '', 0, 0, 0, '', 'paddingrightonly').'<u>'.$langs->trans("Order").'</u>';
 			if (isset($this->statut)) {
 				$datas['status'] = ' '.$this->getLibStatut(5);
 			}
@@ -3804,7 +3804,7 @@ class Commande extends CommonOrder
 			if (!$nofetch) {
 				$langs->load('project');
 				if (is_null($this->project) || (is_object($this->project) && $this->project->isEmpty())) {
-					$res = $this->fetch_project();
+					$res = $this->fetchProject();
 					if ($res > 0 && $this->project instanceof Project) {
 						$datas['project'] = '<br><b>'.$langs->trans('Project').':</b> '.$this->project->getNomUrl(1, '', 0, 1);
 					}
