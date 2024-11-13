@@ -549,7 +549,7 @@ class Documents extends DolibarrApi
 
 			$upload_dir = $conf->categorie->multidir_output[$object->entity].'/'.get_exdir($object->id, 2, 0, 0, $object, 'category').$object->id."/photos/".dol_sanitizeFileName($object->ref);
 		} elseif ($modulepart == 'ecm') {
-			$upload_dir = $conf->ecm->dir_output . "/". $ref;
+			$upload_dir = $conf->ecm->dir_output . "/". dol_sanitizeFileName($ref);
 			$type = 'all';
 			$recursive = 0;
 		} elseif ($modulepart == 'contrat' || $modulepart == 'contract') {
