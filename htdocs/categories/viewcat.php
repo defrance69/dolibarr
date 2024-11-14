@@ -1415,7 +1415,7 @@ if ($type == Categorie::TYPE_FICHINTER) {
 		accessforbidden("NotEnoughPermissions", 0, 0);
 	}
 }
-		
+
 // Note that $action and $object may have been modified by some hooks
 $parameters = array('type' => $type, 'id' => $id, 'label' => $label);
 $reshook = $hookmanager->executeHooks('addMoreCategoriesList', $parameters, $object, $action);
