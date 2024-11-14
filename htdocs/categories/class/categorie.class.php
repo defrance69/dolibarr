@@ -62,7 +62,7 @@ class Categorie extends CommonObject
 	const TYPE_WEBSITE_PAGE = 'website_page';
 	const TYPE_TICKET = 'ticket';
 	const TYPE_KNOWLEDGEMANAGEMENT = 'knowledgemanagement';
-	const TYPE_TICKET = 'fichinter';
+	const TYPE_FICHINTER = 'fichinter';
 
 	/**
 	 * @var string String with name of icon for myobject. Must be the part after the 'object_' into object_myobject.png
