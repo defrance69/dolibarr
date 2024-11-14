@@ -1378,7 +1378,7 @@ if ($type == Categorie::TYPE_FICHINTER) {
 			$nbtotalofrecords = '';
 			$newcardbutton = '';
 
-			print_barre_liste($langs->trans("FichInter"), $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'object_intervention', 0, $newcardbutton, '', $limit);
+			print_barre_liste($langs->trans("Intervention"), $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'object_intervention', 0, $newcardbutton, '', $limit);
 			print '<table class="noborder centpercent">'."\n";
 			print '<tr class="liste_titre"><td colspan="3">'.$langs->trans("Ref").'</td></tr>'."\n";
 
@@ -1411,7 +1411,7 @@ if ($type == Categorie::TYPE_FICHINTER) {
 			print '</form>'."\n";
 		}
 	} else {
-		print_barre_liste($langs->trans("FichInter"), null, $_SERVER["PHP_SELF"], '', '', '', '', '', '', 'fichinter');
+		print_barre_liste($langs->trans("Intervention"), null, $_SERVER["PHP_SELF"], '', '', '', '', '', '', 'fichinter');
 		accessforbidden("NotEnoughPermissions", 0, 0);
 	}
 }
