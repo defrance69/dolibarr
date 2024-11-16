@@ -555,16 +555,16 @@ if ($type == Categorie::TYPE_PRODUCT) {
 			// @phan-suppress-next-line PhanPluginSuspiciousParamOrder
 			print_barre_liste($langs->trans("ProductsAndServices"), $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'products', 0, $newcardbutton, '', $limit);
 
-			$showclassifyform = 1;
-			if ($showclassifyform) {
-				print '<table class="noborder centpercent">';
-				print '<tr class="liste_titre"><td>';
-				print $langs->trans("AddProductServiceIntoCategory").' &nbsp;';
-				$form->select_produits(0, 'elemid', '', 0, 0, -1, 2, '', 1, array(), 0, 1, 0, '', 0, '', null);
-				print '<input type="submit" class="button buttongen" name="addintocategory" value="'.$langs->trans("ClassifyInCategory").'"></td>';
-				print '</tr>';
-				print '</table>';
-			}
+			// $showclassifyform = 1;
+			// if ($showclassifyform) {
+			print '<table class="noborder centpercent">';
+			print '<tr class="liste_titre"><td>';
+			print $langs->trans("AddProductServiceIntoCategory").' &nbsp;';
+			$form->select_produits(0, 'elemid', '', 0, 0, -1, 2, '', 1, array(), 0, 1, 0, '', 0, '', null);
+			print '<input type="submit" class="button buttongen" name="addintocategory" value="'.$langs->trans("ClassifyInCategory").'"></td>';
+			print '</tr>';
+			print '</table>';
+			// }
 
 			print '<table class="noborder centpercent">'."\n";
 			print '<tr class="liste_titre"><td colspan="3">'.$langs->trans("Ref").'</td></tr>'."\n";
@@ -1336,34 +1336,34 @@ if ($type == Categorie::TYPE_TICKET) {
 // List of Fichinter
 if ($type == Categorie::TYPE_FICHINTER) {
 	if ($user->hasRight("fichinter", "lire")) {
-		$permission = ($user->rights->categorie->creer || $user->rights->categorie->creer);
+		$permission = $user->hasRight('categorie', 'creer');;
 
 		$fichinters = $object->getObjectsInCateg($type, 0, $limit, $offset);
 		if ($fichinters < 0) {
 			dol_print_error($db, $object->error, $object->errors);
 		} else {
 			// Form to add record into a category
-			$showclassifyform = 1;
-			if ($showclassifyform) {
-				require_once DOL_DOCUMENT_ROOT.'/core/class/html.formintervention.class.php';
-				$formfichinter = new FormIntervention($db);
+			// $showclassifyform = 1;
+			// if ($showclassifyform) {
+			require_once DOL_DOCUMENT_ROOT.'/core/class/html.formintervention.class.php';
+			$formfichinter = new FormIntervention($db);
 
-				print '<br>';
-				print '<form method="post" action="'.$_SERVER["PHP_SELF"].'">';
-				print '<input type="hidden" name="token" value="'.newToken().'">';
-				print '<input type="hidden" name="typeid" value="'.$typeid.'">';
-				print '<input type="hidden" name="type" value="'.$typeid.'">';
-				print '<input type="hidden" name="id" value="'.$object->id.'">';
-				print '<input type="hidden" name="action" value="addintocategory">';
-				print '<table class="noborder centpercent">';
-				print '<tr class="liste_titre"><td>';
-				print $langs->trans("AddFichinterIntoCategory").' &nbsp;';
-				print $formfichinter->select_interventions('', '', 'elemid');
-				print '<input type="submit" class="button buttongen" value="'.$langs->trans("ClassifyInCategory").'"></td>';
-				print '</tr>';
-				print '</table>';
-				print '</form>';
-			}
+			print '<br>';
+			print '<form method="post" action="'.$_SERVER["PHP_SELF"].'">';
+			print '<input type="hidden" name="token" value="'.newToken().'">';
+			print '<input type="hidden" name="typeid" value="'.$typeid.'">';
+			print '<input type="hidden" name="type" value="'.$typeid.'">';
+			print '<input type="hidden" name="id" value="'.$object->id.'">';
+			print '<input type="hidden" name="action" value="addintocategory">';
+			print '<table class="noborder centpercent">';
+			print '<tr class="liste_titre"><td>';
+			print $langs->trans("AddFichinterIntoCategory").' &nbsp;';
+			print $formfichinter->select_interventions('', '', 'elemid');
+			print '<input type="submit" class="button buttongen" value="'.$langs->trans("ClassifyInCategory").'"></td>';
+			print '</tr>';
+			print '</table>';
+			print '</form>';
+			// }
 
 			print '<form method="post" action="'.$_SERVER["PHP_SELF"].'">';
 			print '<input type="hidden" name="token" value="'.newToken().'">';
@@ -1397,8 +1397,8 @@ if ($type == Categorie::TYPE_FICHINTER) {
 					print '<td class="right">';
 					if ($permission) {
 						print "<a href= '".$_SERVER['PHP_SELF']."?".(empty($socid) ? 'id' : 'socid')."=".$object->id."&type=".$typeid."&action=unlink&token=".newToken()."&removeelem=".$fichinter->id."'>";
-						print $langs->trans("DeleteFromCat");
-						print img_picto($langs->trans("DeleteFromCat"), 'unlink', '', false, 0, 0, '', 'paddingleft');
+						//print $langs->trans("DeleteFromCat");
+						print img_picto($langs->trans("DeleteFromCat"), 'unlink', '', 0, 0, 0, '', 'paddingleft');
 						print "</a>";
 					}
 					print '</td>';
@@ -1411,7 +1411,7 @@ if ($type == Categorie::TYPE_FICHINTER) {
 			print '</form>'."\n";
 		}
 	} else {
-		print_barre_liste($langs->trans("Intervention"), null, $_SERVER["PHP_SELF"], '', '', '', '', '', '', 'fichinter');
+		print_barre_liste($langs->trans("Intervention"), null, $_SERVER["PHP_SELF"], '', '', '', '', 0, '', 'fichinter');
 		accessforbidden("NotEnoughPermissions", 0, 0);
 	}
 }
