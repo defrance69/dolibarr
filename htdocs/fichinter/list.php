@@ -223,7 +223,7 @@ if (empty($reshook)) {
 		$search_status = "";
 		$search_signed_status = '';
 		$searchCategoryFichinterOperator = 0;
-		$searchCategoryFichinterList = array();																																			
+		$searchCategoryFichinterList = array();
 		$search_date_startday = '';
 		$search_date_startmonth = '';
 		$search_date_startyear = '';
