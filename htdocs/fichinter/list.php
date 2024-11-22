@@ -44,7 +44,7 @@ if (isModEnabled('project')) {
 if (isModEnabled('contract')) {
 	require_once DOL_DOCUMENT_ROOT.'/contrat/class/contrat.class.php';
 }
-if (isModEnabled('categorie')) {
+if (isModEnabled('category')) {
 	require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcategory.class.php';
 }
@@ -223,7 +223,7 @@ if (empty($reshook)) {
 		$search_status = "";
 		$search_signed_status = '';
 		$searchCategoryFichinterOperator = 0;
-		$searchCategoryFichinterList = array();																																			
+		$searchCategoryFichinterList = array();
 		$search_date_startday = '';
 		$search_date_startmonth = '';
 		$search_date_startyear = '';
@@ -379,7 +379,7 @@ if (!empty($searchCategoryFichinterList)) {
 			$sql .= " AND (".implode(' AND ', $searchCategoryFichinterSqlList).")";
 		}
 	}
-}			
+}
 if ($search_status != '' && $search_status >= 0) {
 	$sql .= ' AND f.fk_statut = '.urlencode($search_status);
 }
@@ -631,7 +631,7 @@ if ($search_all) {
 $moreforfilter = '';
 // Filter on categories
 $moreforfilter = '';
-if (isModEnabled('categorie') && $user->hasRight('categorie', 'read')) {
+if (isModEnabled('category') && $user->hasRight('categorie', 'read')) {
 	$formcategory = new FormCategory($db);
 	$moreforfilter .= $formcategory->getFilterBox(Categorie::TYPE_FICHINTER, $searchCategoryFichinterList, 'minwidth300', $searchCategoryFichinterOperator ? $searchCategoryFichinterOperator : 0);
 }
